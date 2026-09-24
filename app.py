@@ -1,4 +1,4 @@
-﻿from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import os
 
@@ -22,8 +22,8 @@ with app.app_context():
 
 @app.route('/')
 def index():
-    products = Product.query.all()
-    return render_template('index.html', products=products)
+    # Jab bhi koi main link khole, seedha admin login par chala jaye
+    return redirect(url_for('admin_login'))
 
 @app.route('/admin-login', methods=['GET', 'POST'])
 def admin_login():
@@ -47,6 +47,8 @@ def admin_dashboard():
         file = request.files['image']
         if file:
             filename = file.filename
+            # Ensure upload folder exists
+            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             
             new_product = Product(name=name, price=price, category=category, stock=stock, image=filename)
